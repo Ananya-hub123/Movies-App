@@ -64,9 +64,12 @@ router.post("/", (req, res) => {
       res.status(400).send({ message: err.message });
     } else if (req.file) {
       console.log("File uploaded successfully:", req.file.path);
+      const baseUrl = process.env.BASE_URL || 'https://movies-app-production-ff8a.up.railway.app';
+      const imageUrl = `${baseUrl}/${req.file.path}`;
+      console.log("Image URL:", imageUrl);
       res.status(200).send({
         message: "Image uploaded successfully",
-        image: `${process.env.BASE_URL || 'https://movies-app-production-ff8a.up.railway.app'}/${req.file.path}`,
+        image: imageUrl,
       });
     } else {
       console.log("No file received");

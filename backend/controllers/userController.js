@@ -75,8 +75,15 @@ const logoutCurrentUser = asyncHandler(async (req, res) => {
 });
 
 const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({});
-  res.json(users);
+  console.log("Getting all users...");
+  try {
+    const users = await User.find({});
+    console.log("Found users:", users.length);
+    res.json(users);
+  } catch (error) {
+    console.error("Error getting users:", error);
+    res.status(500).json({ message: "Error getting users", error: error.message });
+  }
 });
 
 const getCurrentUserProfile = asyncHandler(async (req, res) => {
