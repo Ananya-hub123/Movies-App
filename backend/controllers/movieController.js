@@ -3,9 +3,24 @@ import Movie from "../models/Movie.js";
 const createMovie = async (req, res) => {
   console.log("=== CREATE MOVIE DEBUG ===");
   console.log("Request body:", req.body);
+  console.log("Genre:", req.body.genre);
+  console.log("Name:", req.body.name);
+  console.log("Year:", req.body.year);
+  console.log("Detail:", req.body.detail);
+  console.log("Cast:", req.body.cast);
+  console.log("Image:", req.body.image);
+  
   try {
     const newMovie = new Movie(req.body);
     console.log("New movie object:", newMovie);
+    
+    // Validate required fields
+    const validationErrors = newMovie.validateSync();
+    if (validationErrors) {
+      console.error("Validation errors:", validationErrors);
+      return res.status(400).json({ error: validationErrors.message });
+    }
+    
     const savedMovie = await newMovie.save();
     console.log("Movie saved successfully:", savedMovie._id);
     res.json(savedMovie);
