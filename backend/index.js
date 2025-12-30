@@ -3,6 +3,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import path from "path";
+import cors from "cors";
 
 // Files
 import connectDB from "./config/db.js";
@@ -21,6 +22,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors({
+  origin: ["https://movies-hubapp.netlify.app", "http://localhost:5173"],
+  credentials: true
+}));
 
 const PORT = process.env.PORT || 3000;
 
