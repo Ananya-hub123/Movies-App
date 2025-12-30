@@ -33,15 +33,21 @@ const upload = multer({ storage, fileFilter });
 const uploadSingleImage = upload.single("image");
 
 router.post("/", (req, res) => {
+  console.log("Upload request received");
+  console.log("Content-Type:", req.get('Content-Type'));
+  
   uploadSingleImage(req, res, (err) => {
     if (err) {
+      console.log("Upload error:", err);
       res.status(400).send({ message: err.message });
     } else if (req.file) {
+      console.log("File uploaded successfully:", req.file.path);
       res.status(200).send({
         message: "Image uploaded successfully",
         image: `${process.env.BASE_URL || 'https://movies-app-production-ff8a.up.railway.app'}/${req.file.path}`,
       });
     } else {
+      console.log("No file received");
       res.status(400).send({ message: "No image file provided" });
     }
   });

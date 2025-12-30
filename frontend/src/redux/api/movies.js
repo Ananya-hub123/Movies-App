@@ -54,6 +54,7 @@ export const moviesApiSlice = apiSlice.injectEndpoints({
         url: `${UPLOAD_URL}`,
         method: "POST",
         body: formData,
+        formData: true,
       }),
     }),
 
