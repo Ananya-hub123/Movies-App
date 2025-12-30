@@ -17,14 +17,22 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req, file, cb) => {
   const filetypes = /jpe?g|png|webp/;
-  const mimetypes = /image\/jpe?g|image\/png||image\/webp/;
+  const mimetypes = /image\/jpe?g|image\/png|image\/webp/;
 
-  const extname = path.extname(file.originalname);
+  const extname = path.extname(file.originalname).toLowerCase();
   const mimetype = file.mimetype;
+
+  console.log("File filter debug:");
+  console.log("Original name:", file.originalname);
+  console.log("Extension:", extname);
+  console.log("MIME type:", mimetype);
+  console.log("Extension test:", filetypes.test(extname));
+  console.log("MIME test:", mimetypes.test(mimetype));
 
   if (filetypes.test(extname) && mimetypes.test(mimetype)) {
     cb(null, true);
   } else {
+    console.log("File rejected - not an image");
     cb(new Error("Images only"), false);
   }
 };
@@ -33,8 +41,14 @@ const upload = multer({ storage, fileFilter });
 const uploadSingleImage = upload.single("image");
 
 router.post("/", (req, res) => {
+  console.log("=== UPLOAD DEBUG ===");
   console.log("Upload request received");
   console.log("Content-Type:", req.get('Content-Type'));
+  console.log("Headers:", Object.keys(req.headers));
+  console.log("Body keys:", Object.keys(req.body));
+  console.log("Files:", req.files);
+  console.log("File:", req.file);
+  console.log("==================");
   
   uploadSingleImage(req, res, (err) => {
     if (err) {
@@ -48,6 +62,7 @@ router.post("/", (req, res) => {
       });
     } else {
       console.log("No file received");
+      console.log("Req body:", req.body);
       res.status(400).send({ message: "No image file provided" });
     }
   });

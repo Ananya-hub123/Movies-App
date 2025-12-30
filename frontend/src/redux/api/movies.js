@@ -50,15 +50,13 @@ export const moviesApiSlice = apiSlice.injectEndpoints({
     }),
 
     uploadImage: builder.mutation({
-      query: (formData) => ({
-        url: `${UPLOAD_URL}`,
-        method: "POST",
-        body: formData,
-        prepareHeaders: (headers) => {
-          headers.delete('Content-Type');
-          return headers;
-        },
-      }),
+      query: (formData) => {
+        return {
+          url: `${UPLOAD_URL}`,
+          method: "POST",
+          body: formData,
+        };
+      },
     }),
 
     getNewMovies: builder.query({
