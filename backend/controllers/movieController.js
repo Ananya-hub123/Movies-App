@@ -1,11 +1,16 @@
 import Movie from "../models/Movie.js";
 
 const createMovie = async (req, res) => {
+  console.log("=== CREATE MOVIE DEBUG ===");
+  console.log("Request body:", req.body);
   try {
     const newMovie = new Movie(req.body);
+    console.log("New movie object:", newMovie);
     const savedMovie = await newMovie.save();
+    console.log("Movie saved successfully:", savedMovie._id);
     res.json(savedMovie);
   } catch (error) {
+    console.error("Error creating movie:", error);
     res.status(500).json({ error: error.message });
   }
 };
