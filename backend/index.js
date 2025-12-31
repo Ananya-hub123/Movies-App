@@ -29,7 +29,9 @@ app.use(cors({
     "https://movies-hubapp.netlify.app",       // Keep old one for now
     "http://localhost:5173"
   ],
-  credentials: true
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 const PORT = process.env.PORT || 3000;
