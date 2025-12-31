@@ -43,9 +43,7 @@ const AdminMoviesList = () => {
                           e.preventDefault();
                           e.stopPropagation();
                           console.log("Navigating to update movie:", movie._id);
-                          const updateUrl = `/admin/movies/update/${movie._id}`;
-                          console.log("Full URL:", updateUrl);
-                          navigate(updateUrl);
+                          navigate(`/admin/movies/update/${movie._id}`);
                         }}
                         className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded"
                       >

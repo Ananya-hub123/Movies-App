@@ -40,60 +40,12 @@ const Login = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    
-    console.log("=== FRONTEND LOGIN DEBUG ===");
-    console.log("Email:", email);
-    console.log("Password:", password);
 
     try {
-      console.log("Calling login API...");
-      console.log("Login function:", login);
-      console.log("Login function type:", typeof login);
-      
-      // Try direct fetch as a fallback
-      console.log("Trying direct fetch as test...");
-      const directResponse = await fetch('https://movies-app-production-ff8a.up.railway.app/api/v1/users/auth', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      
-      console.log("Direct fetch response:", directResponse);
-      console.log("Direct fetch status:", directResponse.status);
-      
-      if (directResponse.ok) {
-        const directData = await directResponse.json();
-        console.log("Direct fetch data:", directData);
-        console.log("Direct fetch data structure:", JSON.stringify(directData, null, 2));
-        
-        // Store token if found
-        if (directData.token) {
-          localStorage.setItem("token", directData.token);
-          console.log("Token stored from direct fetch:", directData.token);
-        }
-        
-        // Set credentials and navigate
-        dispatch(setCredentials(directData));
-        navigate(redirect);
-        return;
-      }
-      
-      // If direct fetch fails, try RTK Query
-      console.log("Direct fetch failed, trying RTK Query...");
       const res = await login({ email, password }).unwrap();
-      console.log("Login response received:", res);
-      console.log("Response structure:", JSON.stringify(res, null, 2));
-      
-      console.log("Dispatching setCredentials...");
       dispatch(setCredentials({ ...res }));
-      console.log("Credentials set, navigating to:", redirect);
-      
       navigate(redirect);
     } catch (err) {
-      console.error("Login error:", err);
-      console.error("Error details:", JSON.stringify(err, null, 2));
       toast.error(err?.data?.message || err.error);
     }
   };
