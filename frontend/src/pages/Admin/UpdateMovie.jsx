@@ -70,6 +70,10 @@ const UpdateMovie = () => {
   };
 
   const handleUpdateMovie = async () => {
+    console.log("=== FRONTEND UPDATE MOVIE DEBUG ===");
+    console.log("movieData:", movieData);
+    console.log("id:", id);
+    
     try {
       if (
         !movieData.name ||
@@ -98,13 +102,17 @@ const UpdateMovie = () => {
         }
       }
 
-      await updateMovie({
+      const updateData = {
         id: id,
         updatedMovie: {
           ...movieData,
           image: uploadedImagePath,
         },
-      });
+      };
+      
+      console.log("Sending update data:", updateData);
+
+      await updateMovie(updateData);
 
       navigate("/movies");
     } catch (error) {

@@ -34,13 +34,23 @@ const MovieDetails = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
+    console.log("=== FRONTEND REVIEW DEBUG ===");
+    console.log("userInfo:", userInfo);
+    console.log("movieId:", movieId);
+    console.log("rating:", rating);
+    console.log("comment:", comment);
+
     try {
-      await createReview({
+      const reviewData = {
         id: movieId,
         rating,
         comment,
         userName: userInfo?.name || userInfo?.username || "Anonymous User",
-      }).unwrap();
+      };
+      
+      console.log("Sending review data:", reviewData);
+      
+      await createReview(reviewData).unwrap();
 
       refetch();
 
