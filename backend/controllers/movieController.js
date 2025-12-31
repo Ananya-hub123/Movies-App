@@ -107,15 +107,15 @@ const movieReview = async (req, res) => {
     if (movie) {
       console.log("Found movie:", movie.name);
       
-      // Get username from authenticated user
-      const userName = req.user?.name || req.user?.username || req.user?.email || "Unknown User";
-      console.log("Using authenticated user name:", userName);
+      // Get username from authenticated user or use a default
+      const userName = req.user?.name || req.user?.username || req.user?.email || "Movie Lover";
+      console.log("Using user name:", userName);
       
       const review = {
         name: userName,
         rating: Number(rating),
         comment,
-        user: req.user._id,
+        user: req.user?._id || new mongoose.Types.ObjectId(), // Use authenticated user ID or generate new one
       };
       
       console.log("Creating review with name:", review.name);
