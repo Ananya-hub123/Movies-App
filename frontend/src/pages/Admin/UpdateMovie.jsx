@@ -73,6 +73,8 @@ const UpdateMovie = () => {
     console.log("=== FRONTEND UPDATE MOVIE DEBUG ===");
     console.log("movieData:", movieData);
     console.log("id:", id);
+    console.log("isUpdatingMovie:", isUpdatingMovie);
+    console.log("isUploadingImage:", isUploadingImage);
     
     try {
       if (
@@ -81,13 +83,17 @@ const UpdateMovie = () => {
         !movieData.detail ||
         !movieData.cast
       ) {
+        console.log("Validation failed - missing required fields");
         toast.error("Please fill in all required fields");
         return;
       }
 
+      console.log("Validation passed");
+
       let uploadedImagePath = movieData.image;
 
       if (selectedImage) {
+        console.log("Uploading new image...");
         const formData = new FormData();
         formData.append("image", selectedImage);
 
@@ -95,6 +101,7 @@ const UpdateMovie = () => {
 
         if (uploadImageResponse.data) {
           uploadedImagePath = uploadImageResponse.data.image;
+          console.log("Image uploaded successfully:", uploadedImagePath);
         } else {
           console.error("Failed to upload image:", uploadImageErrorDetails);
           toast.error("Failed to upload image");
@@ -111,9 +118,11 @@ const UpdateMovie = () => {
       };
       
       console.log("Sending update data:", updateData);
+      console.log("Calling updateMovie API...");
 
       await updateMovie(updateData);
 
+      console.log("Update successful!");
       navigate("/movies");
     } catch (error) {
       console.error("Failed to update movie:", error);

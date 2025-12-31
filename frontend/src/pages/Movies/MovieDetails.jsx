@@ -40,12 +40,16 @@ const MovieDetails = () => {
     console.log("rating:", rating);
     console.log("comment:", comment);
 
+    // Get username from multiple possible sources
+    const username = userInfo?.name || userInfo?.username || userInfo?.email || "Anonymous User";
+    console.log("Extracted username:", username);
+
     try {
       const reviewData = {
         id: movieId,
         rating,
         comment,
-        userName: userInfo?.name || userInfo?.username || "Anonymous User",
+        userName: username,
       };
       
       console.log("Sending review data:", reviewData);
