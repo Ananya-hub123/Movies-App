@@ -1,0 +1,1 @@
+{"version": 2, "builds": [{"src": "frontend/package.json", "use": "@vercel/static-build", "config": {"distDir": "frontend/dist"}}], "routes": [{"src": "/admin/movies/update/(.*)", "dest": "/frontend/index.html"}, {"src": "/admin/(.*)", "dest": "/frontend/index.html"}, {"src": "/movies/(.*)", "dest": "/frontend/index.html"}, {"src": "/(.*)", "dest": "/frontend/index.html"}]}
