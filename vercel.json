@@ -1,1 +1,0 @@
-{"rewrites": [{"source": "/admin/movies/update/:path*", "destination": "/index.html"}, {"source": "/admin/:path*", "destination": "/index.html"}, {"source": "/movies/:path*", "destination": "/index.html"}, {"source": "/(.*)", "destination": "/index.html"}]}
