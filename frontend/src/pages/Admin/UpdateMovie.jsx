@@ -211,7 +211,22 @@ const UpdateMovie = () => {
               </Button>
             </Grid>
             <Grid item xs={12}>
-              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+                {/* TEST BUTTON - Simple test */}
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    console.log("TEST BUTTON CLICKED!");
+                    alert("Test button clicked! This proves the button click works.");
+                    console.log("Current movieData:", movieData);
+                    console.log("Current ID:", id);
+                  }}
+                  size="small"
+                >
+                  TEST BUTTON
+                </Button>
+                
                 <Button
                   variant="contained"
                   color="primary"
@@ -221,6 +236,7 @@ const UpdateMovie = () => {
                 >
                   {isUpdatingMovie || isUploadingImage ? "Updating..." : "Update Movie"}
                 </Button>
+                
                 <Button
                   variant="contained"
                   color="error"
