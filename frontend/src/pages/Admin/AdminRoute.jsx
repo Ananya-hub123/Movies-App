@@ -6,13 +6,11 @@ const AdminRoute = () => {
 
   console.log("=== ADMIN ROUTE DEBUG ===");
   console.log("userInfo:", userInfo);
-  console.log("userInfo.isAdmin:", userInfo?.isAdmin);
+  console.log("userInfo exists:", !!userInfo);
+  console.log("isAdmin:", userInfo?.isAdmin);
 
-  // Temporarily bypass admin check for testing
-  return userInfo ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/login" replace />
-  );
+  // Completely bypass authentication for testing
+  console.log("Bypassing authentication completely for testing");
+  return <Outlet />;
 };
 export default AdminRoute;
