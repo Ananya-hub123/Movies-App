@@ -98,21 +98,24 @@ const movieReview = async (req, res) => {
   console.log("=== MOVIE REVIEW DEBUG ===");
   console.log("Request body:", req.body);
   console.log("Params:", req.params);
+  console.log("Authenticated user:", req.user);
   
   try {
-    const { rating, comment, userName } = req.body;
+    const { rating, comment } = req.body;
     const movie = await Movie.findById(req.params.id);
 
     if (movie) {
       console.log("Found movie:", movie.name);
-      console.log("User name from request:", userName);
       
-      // Skip duplicate check for now since we removed auth
+      // Get username from authenticated user
+      const userName = req.user?.name || req.user?.username || req.user?.email || "Unknown User";
+      console.log("Using authenticated user name:", userName);
+      
       const review = {
-        name: userName || "Anonymous User",
+        name: userName,
         rating: Number(rating),
         comment,
-        user: new mongoose.Types.ObjectId(), // Generate a valid ObjectId
+        user: req.user._id,
       };
       
       console.log("Creating review with name:", review.name);
