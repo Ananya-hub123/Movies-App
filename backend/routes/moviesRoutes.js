@@ -26,7 +26,7 @@ router.get("/top-movies", getTopMovies);
 router.get("/random-movies", getRandomMovies);
 
 // Restricted Routes
-// router.post("/:id/reviews", movieReview); // Temporarily disable all authentication for testing
+router.post("/:id/reviews", movieReview); // Temporarily disable authentication for testing
 
 // Admin
 router.post("/create-movie", createMovie);
