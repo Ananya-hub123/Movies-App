@@ -13,9 +13,12 @@ const createMovie = async (req, res) => {
 
 const getAllMovies = async (req, res) => {
   try {
+    console.log("Getting all movies...");
     const movies = await Movie.find({});
+    console.log("Found movies:", movies.length);
     res.json(movies);
   } catch (error) {
+    console.error("Error in getAllMovies:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -141,30 +144,38 @@ const deleteComment = async (req, res) => {
 
 const getNewMovies = async (req, res) => {
   try {
+    console.log("Getting new movies...");
     const newMovies = await Movie.find().sort({ createdAt: -1 }).limit(10);
+    console.log("Found new movies:", newMovies.length);
     res.json(newMovies);
   } catch (error) {
+    console.error("Error in getNewMovies:", error);
     res.status(500).json({ error: error.message });
   }
 };
 
 const getTopMovies = async (req, res) => {
   try {
+    console.log("Getting top movies...");
     const topRatedMovies = await Movie.find()
       .sort({ numReviews: -1 })
       .limit(10);
-      
+    console.log("Found top movies:", topRatedMovies.length);
     res.json(topRatedMovies);
   } catch (error) {
+    console.error("Error in getTopMovies:", error);
     res.status(500).json({ error: error.message });
   }
 };
 
 const getRandomMovies = async (req, res) => {
   try {
+    console.log("Getting random movies...");
     const randomMovies = await Movie.aggregate([{ $sample: { size: 10 } }]);
+    console.log("Found random movies:", randomMovies.length);
     res.json(randomMovies);
   } catch (error) {
+    console.error("Error in getRandomMovies:", error);
     res.status(500).json({ error: error.message });
   }
 };
