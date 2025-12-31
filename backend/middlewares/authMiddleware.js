@@ -9,16 +9,21 @@ const authenticate = asyncHandler(async (req, res, next) => {
   // Read JWT from the 'jwt' cookie
   token = req.cookies.jwt;
 
+  console.log("Auth middleware - token:", token ? "exists" : "none");
+
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.userId).select("-password");
+      console.log("Auth middleware - user found:", req.user.username);
       next();
     } catch (error) {
+      console.log("Auth middleware - token failed:", error.message);
       res.status(401);
       throw new Error("Not authorized, token failed.");
     }
   } else {
+    console.log("Auth middleware - no token found");
     res.status(401);
     throw new Error("Not authorized, no token");
   }
