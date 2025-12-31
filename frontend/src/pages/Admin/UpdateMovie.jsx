@@ -71,6 +71,9 @@ const UpdateMovie = () => {
   };
 
   const handleUpdateMovie = async () => {
+    console.log("=== UPDATE MOVIE BUTTON CLICKED ===");
+    alert("Update movie button clicked! Check console for details.");
+    
     console.log("=== FRONTEND UPDATE MOVIE DEBUG ===");
     console.log("movieData:", movieData);
     console.log("id:", id);
@@ -86,7 +89,7 @@ const UpdateMovie = () => {
     console.log("Validation passed - proceeding with update");
 
     try {
-      // Simplified update - just send the movie data directly
+      // Test with a simple fetch call first
       const updateData = {
         name: movieData.name,
         year: movieData.year,
@@ -95,21 +98,35 @@ const UpdateMovie = () => {
         image: movieData.image,
       };
       
-      console.log("Sending simplified update data:", updateData);
+      console.log("Sending update data:", updateData);
       console.log("API endpoint:", `${BASE_URL}${MOVIE_URL}/update-movie/${id}`);
-      console.log("About to call updateMovie...");
-
-      // Call the API directly
-      const result = await updateMovie({ id, updatedMovie: updateData });
       
-      console.log("Update API call successful:", result);
-      toast.success("Movie updated successfully!");
-      navigate("/movies");
+      // Try direct fetch call
+      console.log("Trying direct fetch call...");
+      const response = await fetch(`${BASE_URL}${MOVIE_URL}/update-movie/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData),
+      });
+      
+      console.log("Fetch response:", response);
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Update successful:", result);
+        toast.success("Movie updated successfully!");
+        navigate("/movies");
+      } else {
+        const errorData = await response.json();
+        console.error("Update failed:", errorData);
+        toast.error(`Update failed: ${errorData.message || 'Unknown error'}`);
+      }
       
     } catch (error) {
       console.error("Failed to update movie:", error);
-      console.error("Error details:", error?.data || error?.message);
-      toast.error(`Failed to update movie: ${error?.data?.message || error?.message || 'Unknown error'}`);
+      toast.error(`Failed to update movie: ${error.message}`);
     }
   };
 
