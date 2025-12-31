@@ -171,7 +171,17 @@ const deleteComment = async (req, res) => {
 const getNewMovies = async (req, res) => {
   try {
     const newMovies = await Movie.find().sort({ createdAt: -1 }).limit(10);
-    res.json(newMovies);
+    
+    // Fix image URLs
+    const moviesWithFixedImages = newMovies.map(movie => {
+      if (movie.image && !movie.image.startsWith('http')) {
+        const cleanImage = movie.image.replace(/\\/g, '/').replace(/^\//, '');
+        movie.image = `https://movies-app-production-ff8a.up.railway.app/${cleanImage}`;
+      }
+      return movie;
+    });
+    
+    res.json(moviesWithFixedImages);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -182,7 +192,17 @@ const getTopMovies = async (req, res) => {
     const topRatedMovies = await Movie.find()
       .sort({ numReviews: -1 })
       .limit(10);
-    res.json(topRatedMovies);
+      
+    // Fix image URLs
+    const moviesWithFixedImages = topRatedMovies.map(movie => {
+      if (movie.image && !movie.image.startsWith('http')) {
+        const cleanImage = movie.image.replace(/\\/g, '/').replace(/^\//, '');
+        movie.image = `https://movies-app-production-ff8a.up.railway.app/${cleanImage}`;
+      }
+      return movie;
+    });
+    
+    res.json(moviesWithFixedImages);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -191,7 +211,17 @@ const getTopMovies = async (req, res) => {
 const getRandomMovies = async (req, res) => {
   try {
     const randomMovies = await Movie.aggregate([{ $sample: { size: 10 } }]);
-    res.json(randomMovies);
+    
+    // Fix image URLs
+    const moviesWithFixedImages = randomMovies.map(movie => {
+      if (movie.image && !movie.image.startsWith('http')) {
+        const cleanImage = movie.image.replace(/\\/g, '/').replace(/^\//, '');
+        movie.image = `https://movies-app-production-ff8a.up.railway.app/${cleanImage}`;
+      }
+      return movie;
+    });
+    
+    res.json(moviesWithFixedImages);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
