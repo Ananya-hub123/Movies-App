@@ -30,7 +30,7 @@ router.post("/:id/reviews", movieReview); // Temporarily disable authentication 
 
 // Admin
 router.post("/create-movie", createMovie);
-router.put("/update-movie/:id", updateMovie);
+router.put("/update-movie/:id", authenticate, updateMovie); // Re-enable authentication for update movie
 router.delete("/delete-movie/:id", deleteMovie);
 router.delete("/delete-comment", deleteComment);
 export default router;

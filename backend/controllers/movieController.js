@@ -72,8 +72,10 @@ const getSpecificMovie = async (req, res) => {
 
 const updateMovie = async (req, res) => {
   console.log("=== UPDATE MOVIE DEBUG ===");
-  console.log("Params:", req.params);
-  console.log("Body:", req.body);
+  console.log("Request method:", req.method);
+  console.log("Request params:", req.params);
+  console.log("Request body:", req.body);
+  console.log("Authenticated user:", req.user);
   
   try {
     const { id } = req.params;
@@ -83,7 +85,7 @@ const updateMovie = async (req, res) => {
 
     if (!updatedMovie) {
       console.log("Movie not found with ID:", id);
-      return res.status(404).json({ message: "Movie not found" });
+      res.status(404).json({ message: "Movie not found" });
     }
 
     console.log("Movie updated successfully:", updatedMovie.name);
