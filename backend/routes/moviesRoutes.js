@@ -26,7 +26,7 @@ router.get("/top-movies", getTopMovies);
 router.get("/random-movies", getRandomMovies);
 
 // Restricted Routes
-router.post("/:id/reviews", authenticate, checkId, movieReview);
+router.post("/:id/reviews", movieReview);
 
 // Admin
 router.post("/create-movie", createMovie);

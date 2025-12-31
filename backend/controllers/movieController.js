@@ -31,7 +31,7 @@ const getAllMovies = async (req, res) => {
     const moviesWithFixedImages = movies.map(movie => {
       if (movie.image && !movie.image.startsWith('http')) {
         // Add full URL to relative image paths
-        movie.image = `https://movies-app-production-ff8a.up.railway.app/${movie.image}`;
+        movie.image = `https://movies-app-production-ff8a.up.railway.app/${movie.image.replace(/^\//, '')}`;
       }
       return movie;
     });
@@ -52,7 +52,7 @@ const getSpecificMovie = async (req, res) => {
     
     // Fix image URL for specific movie
     if (specificMovie.image && !specificMovie.image.startsWith('http')) {
-      specificMovie.image = `https://movies-app-production-ff8a.up.railway.app/${specificMovie.image}`;
+      specificMovie.image = `https://movies-app-production-ff8a.up.railway.app/${specificMovie.image.replace(/^\//, '')}`;
     }
     
     res.json(specificMovie);
