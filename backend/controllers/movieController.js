@@ -72,6 +72,10 @@ const getSpecificMovie = async (req, res) => {
 };
 
 const updateMovie = async (req, res) => {
+  console.log("=== UPDATE MOVIE DEBUG ===");
+  console.log("Params:", req.params);
+  console.log("Body:", req.body);
+  
   try {
     const { id } = req.params;
     const updatedMovie = await Movie.findByIdAndUpdate(id, req.body, {
@@ -79,21 +83,31 @@ const updateMovie = async (req, res) => {
     });
 
     if (!updatedMovie) {
+      console.log("Movie not found with ID:", id);
       return res.status(404).json({ message: "Movie not found" });
     }
 
+    console.log("Movie updated successfully:", updatedMovie.name);
     res.json(updatedMovie);
   } catch (error) {
+    console.error("Error updating movie:", error);
     res.status(500).json({ error: error.message });
   }
 };
 
 const movieReview = async (req, res) => {
+  console.log("=== MOVIE REVIEW DEBUG ===");
+  console.log("Request body:", req.body);
+  console.log("Params:", req.params);
+  
   try {
     const { rating, comment, userName } = req.body;
     const movie = await Movie.findById(req.params.id);
 
     if (movie) {
+      console.log("Found movie:", movie.name);
+      console.log("User name from request:", userName);
+      
       // Skip duplicate check for now since we removed auth
       const review = {
         name: userName || "Anonymous User",
@@ -101,6 +115,8 @@ const movieReview = async (req, res) => {
         comment,
         user: new mongoose.Types.ObjectId(), // Generate a valid ObjectId
       };
+      
+      console.log("Creating review with name:", review.name);
 
       movie.reviews.push(review);
       movie.numReviews = movie.reviews.length;
@@ -109,13 +125,15 @@ const movieReview = async (req, res) => {
         movie.reviews.length;
 
       await movie.save();
+      console.log("Review saved successfully");
       res.status(201).json({ message: "Review Added" });
     } else {
+      console.log("Movie not found with ID:", req.params.id);
       res.status(404);
       throw new Error("Movie not found");
     }
   } catch (error) {
-    console.error(error);
+    console.error("Error in movieReview:", error);
     res.status(400).json({ message: error.message });
   }
 };
