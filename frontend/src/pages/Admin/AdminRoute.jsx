@@ -4,7 +4,12 @@ import { useSelector } from "react-redux";
 const AdminRoute = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
-  return userInfo && userInfo.isAdmin ? (
+  console.log("=== ADMIN ROUTE DEBUG ===");
+  console.log("userInfo:", userInfo);
+  console.log("userInfo.isAdmin:", userInfo?.isAdmin);
+
+  // Temporarily bypass admin check for testing
+  return userInfo ? (
     <Outlet />
   ) : (
     <Navigate to="/login" replace />
