@@ -56,6 +56,15 @@ const updateMovie = async (req, res) => {
 
 const movieReview = async (req, res) => {
   try {
+    console.log("=== MOVIE REVIEW DEBUG ===");
+    console.log("Request body:", req.body);
+    console.log("Authenticated user:", req.user);
+    
+    if (!req.user) {
+      console.log("No authenticated user found");
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+    
     const { rating, comment } = req.body;
     const movie = await Movie.findById(req.params.id);
 
@@ -83,13 +92,14 @@ const movieReview = async (req, res) => {
         movie.reviews.length;
 
       await movie.save();
+      console.log("Review saved successfully");
       res.status(201).json({ message: "Review Added" });
     } else {
       res.status(404);
       throw new Error("Movie not found");
     }
   } catch (error) {
-    console.error(error);
+    console.error("Error in movieReview:", error);
     res.status(400).json({ message: error.message });
   }
 };
