@@ -7,6 +7,7 @@ import {
   useDeleteMovieMutation,
 } from "../../redux/api/movies";
 import { toast } from "react-toastify";
+import { BASE_URL, MOVIE_URL } from "../../redux/constants";
 import {
   Box,
   TextField,
@@ -119,6 +120,7 @@ const UpdateMovie = () => {
       
       console.log("Sending update data:", updateData);
       console.log("Calling updateMovie API...");
+      console.log("API endpoint:", `${BASE_URL}${MOVIE_URL}/update-movie/${id}`);
 
       await updateMovie(updateData);
 
@@ -126,6 +128,7 @@ const UpdateMovie = () => {
       navigate("/movies");
     } catch (error) {
       console.error("Failed to update movie:", error);
+      toast.error(`Failed to update movie: ${error?.message || error?.data?.message || 'Unknown error'}`);
     }
   };
 
