@@ -27,24 +27,7 @@ const createMovie = async (req, res) => {
 const getAllMovies = async (req, res) => {
   try {
     const movies = await Movie.find();
-    console.log("=== IMAGE URL DEBUG ===");
-    
-    // Fix image URLs for existing movies
-    const moviesWithFixedImages = movies.map(movie => {
-      if (movie.image && !movie.image.startsWith('http')) {
-        // Use placeholder images for now since Railway doesn't have the uploaded files
-        movie.image = `https://picsum.photos/seed/${movie.name}/300/450.jpg`;
-        console.log("Using placeholder image for:", movie.name);
-      } else {
-        console.log("Image already has full URL:", movie.image);
-      }
-      return movie;
-    });
-    
-    console.log("Total movies:", moviesWithFixedImages.length);
-    console.log("==================");
-    
-    res.json(moviesWithFixedImages);
+    res.json(movies);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -55,15 +38,9 @@ const getSpecificMovie = async (req, res) => {
     const { id } = req.params;
     const specificMovie = await Movie.findById(id);
     if (!specificMovie) {
-      return res.status(404).json({ message: "Movie not found" });
+      res.status(404);
+      throw new Error("Movie not found");
     }
-    
-    // Fix image URL for specific movie
-    if (specificMovie.image && !specificMovie.image.startsWith('http')) {
-      // Use placeholder image for now since Railway doesn't have the uploaded files
-      specificMovie.image = `https://picsum.photos/seed/${specificMovie.name}/300/450.jpg`;
-    }
-    
     res.json(specificMovie);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -192,30 +169,9 @@ const deleteComment = async (req, res) => {
 
 const getNewMovies = async (req, res) => {
   try {
-    console.log("=== NEW MOVIES DEBUG ===");
     const newMovies = await Movie.find().sort({ createdAt: -1 }).limit(10);
-    console.log("Found new movies:", newMovies.length);
-    
-    // Fix image URLs for existing movies
-    const moviesWithFixedImages = newMovies.map(movie => {
-      if (movie.image && !movie.image.startsWith('http')) {
-        // Convert backslashes to forward slashes and remove leading slash
-        const cleanImage = movie.image.replace(/\\/g, '/').replace(/^\//, '');
-        // Use placeholder images for now since Railway doesn't have the uploaded files
-        movie.image = `https://picsum.photos/seed/${movie.name}/300/450.jpg`;
-        console.log("Using placeholder image for:", movie.name);
-      } else {
-        console.log("Image already has full URL or is null:", movie.image);
-      }
-      return movie;
-    });
-    
-    console.log("Returning movies with fixed images");
-    console.log("========================");
-    
-    res.json(moviesWithFixedImages);
+    res.json(newMovies);
   } catch (error) {
-    console.error("Error in getNewMovies:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -225,17 +181,7 @@ const getTopMovies = async (req, res) => {
     const topRatedMovies = await Movie.find()
       .sort({ numReviews: -1 })
       .limit(10);
-      
-    // Fix image URLs
-    const moviesWithFixedImages = topRatedMovies.map(movie => {
-      if (movie.image && !movie.image.startsWith('http')) {
-        // Use placeholder images for now since Railway doesn't have the uploaded files
-        movie.image = `https://picsum.photos/seed/${movie.name}/300/450.jpg`;
-      }
-      return movie;
-    });
-    
-    res.json(moviesWithFixedImages);
+    res.json(topRatedMovies);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -244,17 +190,7 @@ const getTopMovies = async (req, res) => {
 const getRandomMovies = async (req, res) => {
   try {
     const randomMovies = await Movie.aggregate([{ $sample: { size: 10 } }]);
-    
-    // Fix image URLs
-    const moviesWithFixedImages = randomMovies.map(movie => {
-      if (movie.image && !movie.image.startsWith('http')) {
-        // Use placeholder images for now since Railway doesn't have the uploaded files
-        movie.image = `https://picsum.photos/seed/${movie.name}/300/450.jpg`;
-      }
-      return movie;
-    });
-    
-    res.json(moviesWithFixedImages);
+    res.json(randomMovies);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
