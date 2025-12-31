@@ -43,7 +43,7 @@ const AdminMoviesList = () => {
                           e.preventDefault();
                           e.stopPropagation();
                           console.log("Navigating to update movie:", movie._id);
-                          const updateUrl = `/admin/update-movie?id=${movie._id}`;
+                          const updateUrl = `/admin/movies/update/${movie._id}`;
                           console.log("Full URL:", updateUrl);
                           navigate(updateUrl);
                         }}

@@ -41,50 +41,45 @@ const loginUser = asyncHandler(async (req, res) => {
   console.log("=== LOGIN DEBUG ===");
   console.log("Request body:", req.body);
   
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    if (!email || !password) {
-      console.log("Missing email or password");
-      res.status(400);
-      throw new Error("Please enter email and password");
-    }
-
-    const existingUser = await User.findOne({ email });
-    console.log("Found user:", existingUser ? existingUser.email : "Not found");
-
-    if (existingUser) {
-      const isPasswordValid = await bcrypt.compare(
-        password,
-        existingUser.password
-      );
-      
-      console.log("Password valid:", isPasswordValid);
-
-      if (isPasswordValid) {
-        console.log("Creating token for user:", existingUser.username);
-        createToken(res, existingUser._id);
-        
-        // Send user data in response
-        res.json({
-          _id: existingUser._id,
-          username: existingUser.username,
-          email: existingUser.email,
-          isAdmin: existingUser.isAdmin,
-        });
-      } else {
-        console.log("Invalid password");
-        res.status(401).json({ message: "Invalid Password" });
-      }
-    } else {
-      console.log("User not found");
-      res.status(401).json({ message: "User not found" });
-    }
-  } catch (error) {
-    console.error("Login error:", error.message);
-    res.status(401).json({ message: error.message });
+  if (!email || !password) {
+    console.log("Missing email or password");
+    res.status(400);
+    throw new Error("Please enter email and password");
   }
-};
+
+  const existingUser = await User.findOne({ email });
+  console.log("Found user:", existingUser ? existingUser.email : "Not found");
+
+  if (existingUser) {
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
+    
+    console.log("Password valid:", isPasswordValid);
+
+    if (isPasswordValid) {
+      console.log("Creating token for user:", existingUser.username);
+      const token = createToken(res, existingUser._id);
+
+      res.status(201).json({
+        _id: existingUser._id,
+        username: existingUser.username,
+        email: existingUser.email,
+        isAdmin: existingUser.isAdmin,
+        token: token, // Also send token in response for debugging
+      });
+    } else {
+      console.log("Invalid password");
+      res.status(401).json({ message: "Invalid Password" });
+    }
+  } else {
+    console.log("User not found");
+    res.status(401).json({ message: "User not found" });
+  }
+});
 
 const logoutCurrentUser = asyncHandler(async (req, res) => {
   res.cookie("jwt", "", {

@@ -24,22 +24,8 @@ import {
 } from '@mui/material';
 
 const UpdateMovie = () => {
-  const [movieId, setMovieId] = useState(null);
+  const { id } = useParams();
   const navigate = useNavigate();
-
-  // Get movie ID from localStorage or URL search params
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id') || localStorage.getItem('updateMovieId');
-    if (id) {
-      setMovieId(id);
-      localStorage.setItem('updateMovieId', id); // Store for future use
-    }
-  }, []);
-
-  const { data: movie, isLoading, error } = useGetSpecificMovieQuery(movieId, {
-    skip: !movieId,
-  });
 
   const [movieData, setMovieData] = useState({
     name: "",
@@ -51,12 +37,13 @@ const UpdateMovie = () => {
   });
 
   const [selectedImage, setSelectedImage] = useState(null);
+  const { data: initialMovieData } = useGetSpecificMovieQuery(id);
 
   useEffect(() => {
-    if (movie) {
-      setMovieData(movie);
+    if (initialMovieData) {
+      setMovieData(initialMovieData);
     }
-  }, [movie]);
+  }, [initialMovieData]);
 
   const [updateMovie, { isLoading: isUpdatingMovie }] =
     useUpdateMovieMutation();
@@ -89,7 +76,7 @@ const UpdateMovie = () => {
     
     console.log("=== FRONTEND UPDATE MOVIE DEBUG ===");
     console.log("movieData:", movieData);
-    console.log("movieId:", movieId);
+    console.log("id:", id);
     console.log("isUpdatingMovie:", isUpdatingMovie);
     console.log("isUploadingImage:", isUploadingImage);
     
@@ -112,11 +99,11 @@ const UpdateMovie = () => {
       };
       
       console.log("Sending update data:", updateData);
-      console.log("API endpoint:", `${BASE_URL}${MOVIE_URL}/update-movie/${movieId}`);
+      console.log("API endpoint:", `${BASE_URL}${MOVIE_URL}/update-movie/${id}`);
       
       // Try direct fetch call
       console.log("Trying direct fetch call...");
-      const response = await fetch(`${BASE_URL}${MOVIE_URL}/update-movie/${movieId}`, {
+      const response = await fetch(`${BASE_URL}${MOVIE_URL}/update-movie/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -146,7 +133,7 @@ const UpdateMovie = () => {
   const handleDeleteMovie = async () => {
     try {
       toast.success("Movie deleted successfully");
-      await deleteMovie(movieId);
+      await deleteMovie(id);
       navigate("/movies");
     } catch (error) {
       console.error("Failed to delete movie:", error);
@@ -233,7 +220,7 @@ const UpdateMovie = () => {
                     console.log("TEST BUTTON CLICKED!");
                     alert("Test button clicked! This proves the button click works.");
                     console.log("Current movieData:", movieData);
-                    console.log("Current movieId:", movieId);
+                    console.log("Current ID:", id);
                   }}
                   size="small"
                 >
