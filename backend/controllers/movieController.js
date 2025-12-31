@@ -26,16 +26,22 @@ const createMovie = async (req, res) => {
 const getAllMovies = async (req, res) => {
   try {
     const movies = await Movie.find();
+    console.log("=== IMAGE DEBUG ===");
+    console.log("Found movies:", movies.length);
     
     // Fix image URLs for existing movies
     const moviesWithFixedImages = movies.map(movie => {
+      console.log("Movie:", movie.name, "Image:", movie.image);
       if (movie.image && !movie.image.startsWith('http')) {
         // Add full URL to relative image paths
+        const oldImage = movie.image;
         movie.image = `https://movies-app-production-ff8a.up.railway.app/${movie.image.replace(/^\//, '')}`;
+        console.log("Fixed image from:", oldImage, "to:", movie.image);
       }
       return movie;
     });
     
+    console.log("==================");
     res.json(moviesWithFixedImages);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -80,24 +86,16 @@ const updateMovie = async (req, res) => {
 
 const movieReview = async (req, res) => {
   try {
-    const { rating, comment } = req.body;
+    const { rating, comment, userName } = req.body;
     const movie = await Movie.findById(req.params.id);
 
     if (movie) {
-      const alreadyReviewed = movie.reviews.find(
-        (r) => r.user.toString() === req.user._id.toString()
-      );
-
-      if (alreadyReviewed) {
-        res.status(400);
-        throw new Error("Movie already reviewed");
-      }
-
+      // Skip duplicate check for now since we removed auth
       const review = {
-        name: req.user.username,
+        name: userName || "Anonymous User",
         rating: Number(rating),
         comment,
-        user: req.user._id,
+        user: "temp-user-id", // Temporary user ID
       };
 
       movie.reviews.push(review);
@@ -114,7 +112,7 @@ const movieReview = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(400).json(error.message);
+    res.status(400).json({ message: error.message });
   }
 };
 
