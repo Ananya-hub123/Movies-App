@@ -77,58 +77,39 @@ const UpdateMovie = () => {
     console.log("isUpdatingMovie:", isUpdatingMovie);
     console.log("isUploadingImage:", isUploadingImage);
     
+    // Simple validation
+    if (!movieData.name || !movieData.year || !movieData.detail || !movieData.cast) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    console.log("Validation passed - proceeding with update");
+
     try {
-      if (
-        !movieData.name ||
-        !movieData.year ||
-        !movieData.detail ||
-        !movieData.cast
-      ) {
-        console.log("Validation failed - missing required fields");
-        toast.error("Please fill in all required fields");
-        return;
-      }
-
-      console.log("Validation passed");
-
-      let uploadedImagePath = movieData.image;
-
-      if (selectedImage) {
-        console.log("Uploading new image...");
-        const formData = new FormData();
-        formData.append("image", selectedImage);
-
-        const uploadImageResponse = await uploadImage(formData);
-
-        if (uploadImageResponse.data) {
-          uploadedImagePath = uploadImageResponse.data.image;
-          console.log("Image uploaded successfully:", uploadedImagePath);
-        } else {
-          console.error("Failed to upload image:", uploadImageErrorDetails);
-          toast.error("Failed to upload image");
-          return;
-        }
-      }
-
+      // Simplified update - just send the movie data directly
       const updateData = {
-        id: id,
-        updatedMovie: {
-          ...movieData,
-          image: uploadedImagePath,
-        },
+        name: movieData.name,
+        year: movieData.year,
+        detail: movieData.detail,
+        cast: movieData.cast,
+        image: movieData.image,
       };
       
-      console.log("Sending update data:", updateData);
-      console.log("Calling updateMovie API...");
+      console.log("Sending simplified update data:", updateData);
       console.log("API endpoint:", `${BASE_URL}${MOVIE_URL}/update-movie/${id}`);
+      console.log("About to call updateMovie...");
 
-      await updateMovie(updateData);
-
-      console.log("Update successful!");
+      // Call the API directly
+      const result = await updateMovie({ id, updatedMovie: updateData });
+      
+      console.log("Update API call successful:", result);
+      toast.success("Movie updated successfully!");
       navigate("/movies");
+      
     } catch (error) {
       console.error("Failed to update movie:", error);
-      toast.error(`Failed to update movie: ${error?.message || error?.data?.message || 'Unknown error'}`);
+      console.error("Error details:", error?.data || error?.message);
+      toast.error(`Failed to update movie: ${error?.data?.message || error?.message || 'Unknown error'}`);
     }
   };
 
