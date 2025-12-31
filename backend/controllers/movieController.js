@@ -27,6 +27,7 @@ const createMovie = async (req, res) => {
 const getAllMovies = async (req, res) => {
   try {
     const movies = await Movie.find();
+    console.log("=== IMAGE URL DEBUG ===");
     
     // Fix image URLs for existing movies
     const moviesWithFixedImages = movies.map(movie => {
@@ -34,9 +35,15 @@ const getAllMovies = async (req, res) => {
         // Convert backslashes to forward slashes and remove leading slash
         const cleanImage = movie.image.replace(/\\/g, '/').replace(/^\//, '');
         movie.image = `https://movies-app-production-ff8a.up.railway.app/${cleanImage}`;
+        console.log("Fixed image URL:", movie.image);
+      } else {
+        console.log("Image already has full URL:", movie.image);
       }
       return movie;
     });
+    
+    console.log("Total movies:", moviesWithFixedImages.length);
+    console.log("==================");
     
     res.json(moviesWithFixedImages);
   } catch (error) {
