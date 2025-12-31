@@ -8,10 +8,7 @@ const baseQuery = fetchBaseQuery({
     const token = localStorage.getItem("token");
     if (token) {
       console.log("Adding Authorization header with token:", token.substring(0, 20) + "...");
-      headers = {
-        ...headers,
-        Authorization: `Bearer ${token}`,
-      };
+      headers.set("Authorization", `Bearer ${token}`);
     }
     return headers;
   },
