@@ -22,22 +22,22 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-// Add debugging middleware to log all requests
+// Temporary wildcard CORS for debugging
 app.use((req, res, next) => {
-  console.log("=== REQUEST DEBUG ===");
-  console.log("Method:", req.method);
-  console.log("URL:", req.url);
-  console.log("Headers:", req.headers);
-  console.log("Body:", req.body);
-  next();
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
 });
 
 app.use(cors({
   origin: [
     "https://movies-pp4jk18mb-ananya-padmanabha-shettys-projects.vercel.app",  // Your new Vercel URL
     "https://movies-app-beryl-xi.vercel.app",  // Previous one
-    "https://movies-app-git-main-ananya-padmanabha-shettys-projects.vercel.app", // Another previous one
     "https://movies-hubapp.netlify.app",       // Keep old one for now
     "http://localhost:5173"
   ],
