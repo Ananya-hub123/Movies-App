@@ -96,38 +96,43 @@ const CreateMovie = () => {
         const formData = new FormData();
         formData.append("image", selectedImage);
 
+        console.log("Uploading image...");
         const uploadImageResponse = await uploadImage(formData);
+        console.log("Upload response:", uploadImageResponse);
 
         if (uploadImageResponse.data) {
           uploadedImagePath = uploadImageResponse.data.image;
+          console.log("Image uploaded successfully, path:", uploadedImagePath);
         } else {
           console.error("Failed to upload image: ", uploadImageErrorDetails);
           toast.error("Failed to upload image");
           return;
         }
-
-        await createMovie({
-          ...movieData,
-          image: uploadedImagePath,
-        });
-
-        navigate("/admin/movies-list");
-
-        setMovieData({
-          name: "",
-          year: 0,
-          detail: "",
-          cast: [],
-          ratings: 0,
-          image: null,
-          genre: "",
-        });
-
-        toast.success("Movie Added To Database");
       }
+
+      console.log("Creating movie with data:", { ...movieData, image: uploadedImagePath });
+      const movieResponse = await createMovie({
+        ...movieData,
+        image: uploadedImagePath,
+      });
+      console.log("Movie creation response:", movieResponse);
+
+      navigate("/admin/movies-list");
+
+      setMovieData({
+        name: "",
+        year: 0,
+        detail: "",
+        cast: [],
+        rating: 0,
+        image: null,
+        genre: "",
+      });
+      setSelectedImage(null);
+      toast.success("Movie created successfully");
     } catch (error) {
-      console.error("Failed to create movie: ", createMovieErrorDetail);
-      toast.error(`Failed to create movie: ${createMovieErrorDetail?.message}`);
+      console.error("Error creating movie:", error);
+      toast.error("Failed to create movie");
     }
   };
 
