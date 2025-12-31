@@ -9,6 +9,14 @@ export const userApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      transformResponse: (response) => {
+        // Store token in localStorage if present
+        if (response.data.token) {
+          localStorage.setItem("token", response.data.token);
+          console.log("Token stored in localStorage:", response.data.token);
+        }
+        return response;
+      },
     }),
 
     register: builder.mutation({
