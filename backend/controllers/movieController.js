@@ -25,9 +25,9 @@ const getSpecificMovie = async (req, res) => {
     const { id } = req.params;
     const specificMovie = await Movie.findById(id);
     if (!specificMovie) {
-      return res.status(404).json({ message: "Movie not found" });
+      res.status(404);
+      throw new Error("Movie not found");
     }
-    
     res.json(specificMovie);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -153,7 +153,6 @@ const getTopMovies = async (req, res) => {
     const topRatedMovies = await Movie.find()
       .sort({ numReviews: -1 })
       .limit(10);
-      
     res.json(topRatedMovies);
   } catch (error) {
     res.status(500).json({ error: error.message });
