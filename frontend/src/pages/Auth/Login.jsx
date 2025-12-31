@@ -40,12 +40,24 @@ const Login = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    
+    console.log("=== FRONTEND LOGIN DEBUG ===");
+    console.log("Email:", email);
+    console.log("Password:", password);
 
     try {
+      console.log("Calling login API...");
       const res = await login({ email, password }).unwrap();
+      console.log("Login response received:", res);
+      console.log("Response structure:", JSON.stringify(res, null, 2));
+      
+      console.log("Dispatching setCredentials...");
       dispatch(setCredentials({ ...res }));
+      console.log("Credentials set, navigating to:", redirect);
+      
       navigate(redirect);
     } catch (err) {
+      console.error("Login error:", err);
       toast.error(err?.data?.message || err.error);
     }
   };
