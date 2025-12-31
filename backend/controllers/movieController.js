@@ -27,7 +27,18 @@ const createMovie = async (req, res) => {
 const getAllMovies = async (req, res) => {
   try {
     const movies = await Movie.find();
-    res.json(movies);
+    
+    // Fix image URLs to point to Railway backend
+    const moviesWithFixedImages = movies.map(movie => {
+      if (movie.image && !movie.image.startsWith('http')) {
+        // Convert backslashes to forward slashes and remove leading slash
+        const cleanImage = movie.image.replace(/\\/g, '/').replace(/^\//, '');
+        movie.image = `https://movies-app-production-ff8a.up.railway.app/${cleanImage}`;
+      }
+      return movie;
+    });
+    
+    res.json(moviesWithFixedImages);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -39,6 +50,12 @@ const getSpecificMovie = async (req, res) => {
     const specificMovie = await Movie.findById(id);
     if (!specificMovie) {
       return res.status(404).json({ message: "Movie not found" });
+    }
+    
+    // Fix image URL to point to Railway backend
+    if (specificMovie.image && !specificMovie.image.startsWith('http')) {
+      const cleanImage = specificMovie.image.replace(/\\/g, '/').replace(/^\//, '');
+      specificMovie.image = `https://movies-app-production-ff8a.up.railway.app/${cleanImage}`;
     }
     
     res.json(specificMovie);
@@ -170,7 +187,17 @@ const deleteComment = async (req, res) => {
 const getNewMovies = async (req, res) => {
   try {
     const newMovies = await Movie.find().sort({ createdAt: -1 }).limit(10);
-    res.json(newMovies);
+    
+    // Fix image URLs to point to Railway backend
+    const moviesWithFixedImages = newMovies.map(movie => {
+      if (movie.image && !movie.image.startsWith('http')) {
+        const cleanImage = movie.image.replace(/\\/g, '/').replace(/^\//, '');
+        movie.image = `https://movies-app-production-ff8a.up.railway.app/${cleanImage}`;
+      }
+      return movie;
+    });
+    
+    res.json(moviesWithFixedImages);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -182,7 +209,16 @@ const getTopMovies = async (req, res) => {
       .sort({ numReviews: -1 })
       .limit(10);
       
-    res.json(topRatedMovies);
+    // Fix image URLs to point to Railway backend
+    const moviesWithFixedImages = topRatedMovies.map(movie => {
+      if (movie.image && !movie.image.startsWith('http')) {
+        const cleanImage = movie.image.replace(/\\/g, '/').replace(/^\//, '');
+        movie.image = `https://movies-app-production-ff8a.up.railway.app/${cleanImage}`;
+      }
+      return movie;
+    });
+    
+    res.json(moviesWithFixedImages);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -191,7 +227,17 @@ const getTopMovies = async (req, res) => {
 const getRandomMovies = async (req, res) => {
   try {
     const randomMovies = await Movie.aggregate([{ $sample: { size: 10 } }]);
-    res.json(randomMovies);
+    
+    // Fix image URLs to point to Railway backend
+    const moviesWithFixedImages = randomMovies.map(movie => {
+      if (movie.image && !movie.image.startsWith('http')) {
+        const cleanImage = movie.image.replace(/\\/g, '/').replace(/^\//, '');
+        movie.image = `https://movies-app-production-ff8a.up.railway.app/${cleanImage}`;
+      }
+      return movie;
+    });
+    
+    res.json(moviesWithFixedImages);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
