@@ -40,8 +40,8 @@ const MovieDetails = () => {
     console.log("rating:", rating);
     console.log("comment:", comment);
 
-    // Get username from multiple possible sources
-    const username = userInfo?.name || userInfo?.username || userInfo?.email || "Anonymous User";
+    // Get username from multiple possible sources or use a default
+    const username = userInfo?.name || userInfo?.username || userInfo?.email || "Movie Lover";
     console.log("Extracted username:", username);
 
     try {

@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGetAllMoviesQuery } from "../../redux/api/movies";
 
 const AdminMoviesList = () => {
   const { data: movies } = useGetAllMoviesQuery();
+  const navigate = useNavigate();
 
   return (
     <div className="container mx-[9rem]">
@@ -40,7 +41,9 @@ const AdminMoviesList = () => {
                       <button
                         onClick={e => {
                           e.preventDefault();
-                          window.location.href = `/admin/movies/update/${movie._id}`;
+                          e.stopPropagation();
+                          console.log("Navigating to update movie:", movie._id);
+                          navigate(`/admin/movies/update/${movie._id}`);
                         }}
                         className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded"
                       >
