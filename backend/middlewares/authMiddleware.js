@@ -19,8 +19,14 @@ const authenticate = asyncHandler(async (req, res, next) => {
     console.log("Token from Authorization header:", token.substring(0, 20) + "...");
   }
 
+  // If still no token, check custom header (for debugging)
+  if (!token && req.headers['x-auth-token']) {
+    token = req.headers['x-auth-token'];
+    console.log("Token from custom header:", token.substring(0, 20) + "...");
+  }
+
   console.log("Auth middleware - token:", token ? "exists" : "none");
-  console.log("Auth middleware - token source:", req.cookies.jwt ? "cookie" : req.headers.authorization ? "header" : "none");
+  console.log("Auth middleware - token source:", req.cookies.jwt ? "cookie" : req.headers.authorization ? "header" : req.headers['x-auth-token'] ? "custom" : "none");
 
   if (token) {
     try {
