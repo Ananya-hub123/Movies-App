@@ -27,7 +27,17 @@ const createMovie = async (req, res) => {
 const getAllMovies = async (req, res) => {
   try {
     const movies = await Movie.find();
-    res.json(movies);
+    
+    // Add image URL handling for missing images
+    const moviesWithImageUrls = movies.map(movie => {
+      if (movie.image && !movie.image.startsWith('http')) {
+        // Check if image exists, otherwise use placeholder
+        movie.image = `https://picsum.photos/seed/${movie.name}/300/450.jpg`;
+      }
+      return movie;
+    });
+    
+    res.json(moviesWithImageUrls);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
