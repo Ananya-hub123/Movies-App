@@ -26,7 +26,17 @@ const createMovie = async (req, res) => {
 const getAllMovies = async (req, res) => {
   try {
     const movies = await Movie.find();
-    res.json(movies);
+    
+    // Fix image URLs for existing movies
+    const moviesWithFixedImages = movies.map(movie => {
+      if (movie.image && !movie.image.startsWith('http')) {
+        // Add full URL to relative image paths
+        movie.image = `https://movies-app-production-ff8a.up.railway.app/${movie.image}`;
+      }
+      return movie;
+    });
+    
+    res.json(moviesWithFixedImages);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -39,7 +49,12 @@ const getSpecificMovie = async (req, res) => {
     if (!specificMovie) {
       return res.status(404).json({ message: "Movie not found" });
     }
-
+    
+    // Fix image URL for specific movie
+    if (specificMovie.image && !specificMovie.image.startsWith('http')) {
+      specificMovie.image = `https://movies-app-production-ff8a.up.railway.app/${specificMovie.image}`;
+    }
+    
     res.json(specificMovie);
   } catch (error) {
     res.status(500).json({ error: error.message });

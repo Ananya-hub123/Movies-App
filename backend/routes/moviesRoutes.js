@@ -30,7 +30,7 @@ router.post("/:id/reviews", authenticate, checkId, movieReview);
 
 // Admin
 router.post("/create-movie", createMovie);
-router.put("/update-movie/:id", authenticate, authorizeAdmin, updateMovie);
-router.delete("/delete-movie/:id", authenticate, authorizeAdmin, deleteMovie);
-router.delete("/delete-comment", authenticate, authorizeAdmin, deleteComment);
+router.put("/update-movie/:id", updateMovie);
+router.delete("/delete-movie/:id", deleteMovie);
+router.delete("/delete-comment", deleteComment);
 export default router;
