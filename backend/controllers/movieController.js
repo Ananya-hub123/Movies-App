@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Movie from "../models/Movie.js";
 
 const createMovie = async (req, res) => {
@@ -35,7 +36,9 @@ const getAllMovies = async (req, res) => {
       if (movie.image && !movie.image.startsWith('http')) {
         // Add full URL to relative image paths
         const oldImage = movie.image;
-        movie.image = `https://movies-app-production-ff8a.up.railway.app/${movie.image.replace(/^\//, '')}`;
+        // Convert backslashes to forward slashes and remove leading slash
+        const cleanImage = movie.image.replace(/\\/g, '/').replace(/^\//, '');
+        movie.image = `https://movies-app-production-ff8a.up.railway.app/${cleanImage}`;
         console.log("Fixed image from:", oldImage, "to:", movie.image);
       }
       return movie;
@@ -58,7 +61,8 @@ const getSpecificMovie = async (req, res) => {
     
     // Fix image URL for specific movie
     if (specificMovie.image && !specificMovie.image.startsWith('http')) {
-      specificMovie.image = `https://movies-app-production-ff8a.up.railway.app/${specificMovie.image.replace(/^\//, '')}`;
+      const cleanImage = specificMovie.image.replace(/\\/g, '/').replace(/^\//, '');
+      specificMovie.image = `https://movies-app-production-ff8a.up.railway.app/${cleanImage}`;
     }
     
     res.json(specificMovie);
@@ -95,7 +99,7 @@ const movieReview = async (req, res) => {
         name: userName || "Anonymous User",
         rating: Number(rating),
         comment,
-        user: "temp-user-id", // Temporary user ID
+        user: new mongoose.Types.ObjectId(), // Generate a valid ObjectId
       };
 
       movie.reviews.push(review);
