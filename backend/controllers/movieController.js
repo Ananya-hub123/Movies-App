@@ -27,24 +27,17 @@ const createMovie = async (req, res) => {
 const getAllMovies = async (req, res) => {
   try {
     const movies = await Movie.find();
-    console.log("=== IMAGE DEBUG ===");
-    console.log("Found movies:", movies.length);
     
     // Fix image URLs for existing movies
     const moviesWithFixedImages = movies.map(movie => {
-      console.log("Movie:", movie.name, "Image:", movie.image);
       if (movie.image && !movie.image.startsWith('http')) {
-        // Add full URL to relative image paths
-        const oldImage = movie.image;
         // Convert backslashes to forward slashes and remove leading slash
         const cleanImage = movie.image.replace(/\\/g, '/').replace(/^\//, '');
         movie.image = `https://movies-app-production-ff8a.up.railway.app/${cleanImage}`;
-        console.log("Fixed image from:", oldImage, "to:", movie.image);
       }
       return movie;
     });
     
-    console.log("==================");
     res.json(moviesWithFixedImages);
   } catch (error) {
     res.status(500).json({ error: error.message });

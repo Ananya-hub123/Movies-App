@@ -39,6 +39,7 @@ const MovieDetails = () => {
         id: movieId,
         rating,
         comment,
+        userName: userInfo?.name || userInfo?.username || "Anonymous User",
       }).unwrap();
 
       refetch();
