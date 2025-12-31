@@ -64,13 +64,20 @@ const loginUser = asyncHandler(async (req, res) => {
       console.log("Creating token for user:", existingUser.username);
       const token = createToken(res, existingUser._id);
 
-      res.status(201).json({
+      const responseData = {
         _id: existingUser._id,
         username: existingUser.username,
         email: existingUser.email,
         isAdmin: existingUser.isAdmin,
         token: token, // Also send token in response for debugging
-      });
+      };
+
+      console.log("=== LOGIN RESPONSE DEBUG ===");
+      console.log("Response data being sent:", responseData);
+      console.log("Token value in response:", token);
+      console.log("========================");
+
+      res.status(201).json(responseData);
     } else {
       console.log("Invalid password");
       res.status(401).json({ message: "Invalid Password" });
