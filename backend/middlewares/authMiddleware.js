@@ -6,10 +6,16 @@ import asyncHandler from "./asyncHandler.js";
 const authenticate = asyncHandler(async (req, res, next) => {
   let token;
 
-  // Read JWT from the 'jwt' cookie
+  // Read JWT from the 'jwt' cookie first
   token = req.cookies.jwt;
+  
+  // If no cookie, check Authorization header
+  if (!token && req.headers.authorization) {
+    token = req.headers.authorization.split(' ')[1]; // Bearer TOKEN
+  }
 
   console.log("Auth middleware - token:", token ? "exists" : "none");
+  console.log("Auth middleware - token source:", req.cookies.jwt ? "cookie" : req.headers.authorization ? "header" : "none");
 
   if (token) {
     try {
