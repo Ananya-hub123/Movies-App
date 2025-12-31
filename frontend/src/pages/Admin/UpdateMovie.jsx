@@ -7,7 +7,6 @@ import {
   useDeleteMovieMutation,
 } from "../../redux/api/movies";
 import { toast } from "react-toastify";
-import { BASE_URL, MOVIE_URL } from "../../redux/constants";
 import {
   Box,
   TextField,
@@ -71,62 +70,62 @@ const UpdateMovie = () => {
   };
 
   const handleUpdateMovie = async () => {
-    console.log("=== UPDATE MOVIE BUTTON CLICKED ===");
-    alert("Update movie button clicked! Check console for details.");
-    
     console.log("=== FRONTEND UPDATE MOVIE DEBUG ===");
     console.log("movieData:", movieData);
     console.log("id:", id);
     console.log("isUpdatingMovie:", isUpdatingMovie);
     console.log("isUploadingImage:", isUploadingImage);
     
-    // Simple validation
-    if (!movieData.name || !movieData.year || !movieData.detail || !movieData.cast) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
-    console.log("Validation passed - proceeding with update");
-
     try {
-      // Test with a simple fetch call first
+      if (
+        !movieData.name ||
+        !movieData.year ||
+        !movieData.detail ||
+        !movieData.cast
+      ) {
+        console.log("Validation failed - missing required fields");
+        toast.error("Please fill in all required fields");
+        return;
+      }
+
+      console.log("Validation passed");
+
+      let uploadedImagePath = movieData.image;
+
+      if (selectedImage) {
+        console.log("Uploading new image...");
+        const formData = new FormData();
+        formData.append("image", selectedImage);
+
+        const uploadImageResponse = await uploadImage(formData);
+
+        if (uploadImageResponse.data) {
+          uploadedImagePath = uploadImageResponse.data.image;
+          console.log("Image uploaded successfully:", uploadedImagePath);
+        } else {
+          console.error("Failed to upload image:", uploadImageErrorDetails);
+          toast.error("Failed to upload image");
+          return;
+        }
+      }
+
       const updateData = {
-        name: movieData.name,
-        year: movieData.year,
-        detail: movieData.detail,
-        cast: movieData.cast,
-        image: movieData.image,
+        id: id,
+        updatedMovie: {
+          ...movieData,
+          image: uploadedImagePath,
+        },
       };
       
       console.log("Sending update data:", updateData);
-      console.log("API endpoint:", `${BASE_URL}${MOVIE_URL}/update-movie/${id}`);
-      
-      // Try direct fetch call
-      console.log("Trying direct fetch call...");
-      const response = await fetch(`${BASE_URL}${MOVIE_URL}/update-movie/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updateData),
-      });
-      
-      console.log("Fetch response:", response);
-      
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Update successful:", result);
-        toast.success("Movie updated successfully!");
-        navigate("/movies");
-      } else {
-        const errorData = await response.json();
-        console.error("Update failed:", errorData);
-        toast.error(`Update failed: ${errorData.message || 'Unknown error'}`);
-      }
-      
+      console.log("Calling updateMovie API...");
+
+      await updateMovie(updateData);
+
+      console.log("Update successful!");
+      navigate("/movies");
     } catch (error) {
       console.error("Failed to update movie:", error);
-      toast.error(`Failed to update movie: ${error.message}`);
     }
   };
 
@@ -211,22 +210,7 @@ const UpdateMovie = () => {
               </Button>
             </Grid>
             <Grid item xs={12}>
-              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-                {/* TEST BUTTON - Simple test */}
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={() => {
-                    console.log("TEST BUTTON CLICKED!");
-                    alert("Test button clicked! This proves the button click works.");
-                    console.log("Current movieData:", movieData);
-                    console.log("Current ID:", id);
-                  }}
-                  size="small"
-                >
-                  TEST BUTTON
-                </Button>
-                
+              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
                 <Button
                   variant="contained"
                   color="primary"
@@ -236,7 +220,6 @@ const UpdateMovie = () => {
                 >
                   {isUpdatingMovie || isUploadingImage ? "Updating..." : "Update Movie"}
                 </Button>
-                
                 <Button
                   variant="contained"
                   color="error"

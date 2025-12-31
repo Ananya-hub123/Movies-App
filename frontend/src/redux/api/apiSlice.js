@@ -6,13 +6,19 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: (headers, { getState }) => {
     // Get token from localStorage
     const token = localStorage.getItem("token");
+    console.log("=== PREPARE HEADERS DEBUG ===");
+    console.log("Token from localStorage:", token ? token.substring(0, 20) + "..." : "none");
+    
     if (token) {
-      console.log("Adding Authorization header with token:", token.substring(0, 20) + "...");
       headers = {
         ...headers,
         Authorization: `Bearer ${token}`,
       };
+      console.log("Headers after adding Authorization:", headers);
+    } else {
+      console.log("No token found, headers unchanged:", headers);
     }
+    console.log("============================");
     return headers;
   },
 });

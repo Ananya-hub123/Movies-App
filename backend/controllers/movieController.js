@@ -72,10 +72,8 @@ const getSpecificMovie = async (req, res) => {
 
 const updateMovie = async (req, res) => {
   console.log("=== UPDATE MOVIE DEBUG ===");
-  console.log("Request method:", req.method);
-  console.log("Request params:", req.params);
-  console.log("Request body:", req.body);
-  console.log("Authenticated user:", req.user);
+  console.log("Params:", req.params);
+  console.log("Body:", req.body);
   
   try {
     const { id } = req.params;
@@ -85,7 +83,7 @@ const updateMovie = async (req, res) => {
 
     if (!updatedMovie) {
       console.log("Movie not found with ID:", id);
-      res.status(404).json({ message: "Movie not found" });
+      return res.status(404).json({ message: "Movie not found" });
     }
 
     console.log("Movie updated successfully:", updatedMovie.name);
@@ -109,15 +107,15 @@ const movieReview = async (req, res) => {
     if (movie) {
       console.log("Found movie:", movie.name);
       
-      // Get username from authenticated user or use a default
-      const userName = req.user?.name || req.user?.username || req.user?.email || "Movie Lover";
-      console.log("Using user name:", userName);
+      // Get username from authenticated user
+      const userName = req.user?.name || req.user?.username || req.user?.email || "Unknown User";
+      console.log("Using authenticated user name:", userName);
       
       const review = {
         name: userName,
         rating: Number(rating),
         comment,
-        user: req.user?._id || new mongoose.Types.ObjectId(), // Use authenticated user ID or generate new one
+        user: req.user._id,
       };
       
       console.log("Creating review with name:", review.name);

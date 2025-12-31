@@ -9,20 +9,12 @@ export const userApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      transformResponse: (response, meta, arg) => {
-        console.log("Login response:", response);
-        console.log("Login meta:", meta);
-        console.log("Login arg:", arg);
-        
+      transformResponse: (response) => {
         // Store token in localStorage if present
-        if (response?.data?.token) {
+        if (response.data.token) {
           localStorage.setItem("token", response.data.token);
           console.log("Token stored in localStorage:", response.data.token);
-        } else if (response?.token) {
-          localStorage.setItem("token", response.token);
-          console.log("Token stored in localStorage:", response.token);
         }
-        
         return response;
       },
     }),
