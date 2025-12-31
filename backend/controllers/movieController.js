@@ -13,12 +13,9 @@ const createMovie = async (req, res) => {
 
 const getAllMovies = async (req, res) => {
   try {
-    console.log("Getting all movies...");
     const movies = await Movie.find({});
-    console.log("Found movies:", movies.length);
     res.json(movies);
   } catch (error) {
-    console.error("Error in getAllMovies:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -56,15 +53,6 @@ const updateMovie = async (req, res) => {
 
 const movieReview = async (req, res) => {
   try {
-    console.log("=== MOVIE REVIEW DEBUG ===");
-    console.log("Request body:", req.body);
-    console.log("Authenticated user:", req.user);
-    
-    if (!req.user) {
-      console.log("No authenticated user found");
-      return res.status(401).json({ message: "User not authenticated" });
-    }
-    
     const { rating, comment } = req.body;
     const movie = await Movie.findById(req.params.id);
 
@@ -92,14 +80,13 @@ const movieReview = async (req, res) => {
         movie.reviews.length;
 
       await movie.save();
-      console.log("Review saved successfully");
       res.status(201).json({ message: "Review Added" });
     } else {
       res.status(404);
       throw new Error("Movie not found");
     }
   } catch (error) {
-    console.error("Error in movieReview:", error);
+    console.error(error);
     res.status(400).json({ message: error.message });
   }
 };
@@ -154,38 +141,30 @@ const deleteComment = async (req, res) => {
 
 const getNewMovies = async (req, res) => {
   try {
-    console.log("Getting new movies...");
     const newMovies = await Movie.find().sort({ createdAt: -1 }).limit(10);
-    console.log("Found new movies:", newMovies.length);
     res.json(newMovies);
   } catch (error) {
-    console.error("Error in getNewMovies:", error);
     res.status(500).json({ error: error.message });
   }
 };
 
 const getTopMovies = async (req, res) => {
   try {
-    console.log("Getting top movies...");
     const topRatedMovies = await Movie.find()
       .sort({ numReviews: -1 })
       .limit(10);
-    console.log("Found top movies:", topRatedMovies.length);
+      
     res.json(topRatedMovies);
   } catch (error) {
-    console.error("Error in getTopMovies:", error);
     res.status(500).json({ error: error.message });
   }
 };
 
 const getRandomMovies = async (req, res) => {
   try {
-    console.log("Getting random movies...");
     const randomMovies = await Movie.aggregate([{ $sample: { size: 10 } }]);
-    console.log("Found random movies:", randomMovies.length);
     res.json(randomMovies);
   } catch (error) {
-    console.error("Error in getRandomMovies:", error);
     res.status(500).json({ error: error.message });
   }
 };
