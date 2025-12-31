@@ -22,6 +22,17 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Add debugging middleware to log all requests
+app.use((req, res, next) => {
+  console.log("=== REQUEST DEBUG ===");
+  console.log("Method:", req.method);
+  console.log("URL:", req.url);
+  console.log("Headers:", req.headers);
+  console.log("Body:", req.body);
+  next();
+});
+
 app.use(cors({
   origin: [
     "https://movies-pp4jk18mb-ananya-padmanabha-shettys-projects.vercel.app",  // Your new Vercel URL
