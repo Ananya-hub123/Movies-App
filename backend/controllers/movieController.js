@@ -170,19 +170,29 @@ const deleteComment = async (req, res) => {
 
 const getNewMovies = async (req, res) => {
   try {
+    console.log("=== NEW MOVIES DEBUG ===");
     const newMovies = await Movie.find().sort({ createdAt: -1 }).limit(10);
+    console.log("Found new movies:", newMovies.length);
     
     // Fix image URLs
     const moviesWithFixedImages = newMovies.map(movie => {
+      console.log("Movie:", movie.name, "Original image:", movie.image);
       if (movie.image && !movie.image.startsWith('http')) {
         const cleanImage = movie.image.replace(/\\/g, '/').replace(/^\//, '');
         movie.image = `https://movies-app-production-ff8a.up.railway.app/${cleanImage}`;
+        console.log("Fixed image URL:", movie.image);
+      } else {
+        console.log("Image already has full URL or is null:", movie.image);
       }
       return movie;
     });
     
+    console.log("Returning movies with fixed images");
+    console.log("========================");
+    
     res.json(moviesWithFixedImages);
   } catch (error) {
+    console.error("Error in getNewMovies:", error);
     res.status(500).json({ error: error.message });
   }
 };
