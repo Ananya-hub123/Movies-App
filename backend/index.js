@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
   origin: [
-    /https:\/\/.*\.vercel\.app$/,  // Allow all Vercel domains
+    "https://movies-app-beryl-xi.vercel.app",  // Your new Vercel URL
     "https://movies-hubapp.netlify.app",      
     "http://localhost:5173"
   ],
