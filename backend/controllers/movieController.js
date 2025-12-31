@@ -14,13 +14,6 @@ const createMovie = async (req, res) => {
     const newMovie = new Movie(req.body);
     console.log("New movie object:", newMovie);
     
-    // Validate required fields
-    const validationErrors = newMovie.validateSync();
-    if (validationErrors) {
-      console.error("Validation errors:", validationErrors);
-      return res.status(400).json({ error: validationErrors.message });
-    }
-    
     const savedMovie = await newMovie.save();
     console.log("Movie saved successfully:", savedMovie._id);
     res.json(savedMovie);
