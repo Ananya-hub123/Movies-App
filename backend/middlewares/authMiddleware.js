@@ -6,41 +6,20 @@ import asyncHandler from "./asyncHandler.js";
 const authenticate = asyncHandler(async (req, res, next) => {
   let token;
 
-  console.log("=== AUTH MIDDLEWARE DEBUG ===");
-  console.log("All cookies:", req.cookies);
-  console.log("All headers:", req.headers);
-
-  // Read JWT from the 'jwt' cookie first
+  // Read JWT from the 'jwt' cookie
   token = req.cookies.jwt;
-  
-  // If no cookie, check Authorization header
-  if (!token && req.headers.authorization) {
-    token = req.headers.authorization.split(' ')[1]; // Bearer TOKEN
-    console.log("Token from Authorization header:", token.substring(0, 20) + "...");
-  }
-
-  // If still no token, check custom header (for debugging)
-  if (!token && req.headers['x-auth-token']) {
-    token = req.headers['x-auth-token'];
-    console.log("Token from custom header:", token.substring(0, 20) + "...");
-  }
-
-  console.log("Auth middleware - token:", token ? "exists" : "none");
-  console.log("Auth middleware - token source:", req.cookies.jwt ? "cookie" : req.headers.authorization ? "header" : req.headers['x-auth-token'] ? "custom" : "none");
 
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.userId).select("-password");
-      console.log("Auth middleware - user found:", req.user.username);
       next();
     } catch (error) {
-      console.log("Auth middleware - token failed:", error.message);
+      console.error(error);
       res.status(401);
       throw new Error("Not authorized, token failed.");
     }
   } else {
-    console.log("Auth middleware - no token found");
     res.status(401);
     throw new Error("Not authorized, no token");
   }

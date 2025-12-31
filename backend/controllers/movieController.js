@@ -95,30 +95,26 @@ const updateMovie = async (req, res) => {
 };
 
 const movieReview = async (req, res) => {
-  console.log("=== MOVIE REVIEW DEBUG ===");
-  console.log("Request body:", req.body);
-  console.log("Params:", req.params);
-  console.log("Authenticated user:", req.user);
-  
   try {
     const { rating, comment } = req.body;
     const movie = await Movie.findById(req.params.id);
 
     if (movie) {
-      console.log("Found movie:", movie.name);
-      
-      // Get username from authenticated user or use default
-      const userName = req.user?.name || req.user?.username || req.user?.email || "Tia"; // Use your name as default
-      console.log("Using user name:", userName);
-      
+      const alreadyReviewed = movie.reviews.find(
+        (r) => r.user.toString() === req.user._id.toString()
+      );
+
+      if (alreadyReviewed) {
+        res.status(400);
+        throw new Error("Movie already reviewed");
+      }
+
       const review = {
-        name: userName,
+        name: req.user.username,
         rating: Number(rating),
         comment,
-        user: req.user?._id || new mongoose.Types.ObjectId(), // Use user ID or generate one
+        user: req.user._id,
       };
-      
-      console.log("Creating review with name:", review.name);
 
       movie.reviews.push(review);
       movie.numReviews = movie.reviews.length;
@@ -127,15 +123,13 @@ const movieReview = async (req, res) => {
         movie.reviews.length;
 
       await movie.save();
-      console.log("Review saved successfully");
       res.status(201).json({ message: "Review Added" });
     } else {
-      console.log("Movie not found with ID:", req.params.id);
       res.status(404);
       throw new Error("Movie not found");
     }
   } catch (error) {
-    console.error("Error in movieReview:", error);
+    console.error(error);
     res.status(400).json({ message: error.message });
   }
 };
