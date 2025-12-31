@@ -6,6 +6,7 @@ import { theme } from './theme';
 import Navigation from "./pages/Auth/Navigation";
 
 const App = () => {
+  console.log("App.jsx v2 - Cache busting"); // Force new build
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
